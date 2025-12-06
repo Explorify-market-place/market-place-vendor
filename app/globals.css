@@ -234,6 +234,7 @@
     padding-top: 88px; /* Height of navbar + some padding */
   }
 }
+<<<<<<< HEAD
 /* ---------- dark-mode contrast fixes (paste at end of globals.css) ---------- */
 /* Small, minimal overrides to make UI readable in .dark without big design changes */
 
@@ -320,3 +321,5 @@
 .dark p, .dark span, .dark div {
   color: rgba(255,255,255,0.9);
 }
+=======
+>>>>>>> 67c34c8c3324039ac4ec0cd00bb34da2653e93e1

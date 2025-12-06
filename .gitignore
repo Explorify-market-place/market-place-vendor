@@ -39,6 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
 # Environment variables
 .env
 .env.local
@@ -58,3 +59,5 @@ node_modules/
 npm-debug.log
 yarn-debug.log
 pnpm-debug.log
+=======
+>>>>>>> 67c34c8c3324039ac4ec0cd00bb34da2653e93e1
