@@ -5,10 +5,10 @@ import { GetCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb"
 // GET - Fetch a single plan by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params as any).id ?? params.id;
+    const { id: planId } = await params;
 
     const command = new GetCommand({
       TableName: PLANS_TABLE,
@@ -37,10 +37,10 @@ export async function GET(
 // PUT - Update a plan
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params as any).id ?? params.id;
+    const { id: planId } = await params;
     const body = await request.json();
     const { ...updates } = body;
 
@@ -89,10 +89,10 @@ export async function PUT(
 // DELETE - Delete a plan (HARD DELETE)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params as any).id ?? params.id;
+    const { id: planId } = await params;
 
     // Hard delete
     const command = new DeleteCommand({

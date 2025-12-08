@@ -215,6 +215,32 @@ export async function getBookingsByUser(userId: string): Promise<DynamoDBBooking
   }
 }
 
+export async function getBookingsByVendor(vendorId: string): Promise<DynamoDBBooking[]> {
+  try {
+    // First, get all plans by this vendor
+    const vendorPlans = await getPlansByVendor(vendorId);
+    const planIds = vendorPlans.map(plan => plan.planId);
+
+    if (planIds.length === 0) {
+      return [];
+    }
+
+    // Then get all bookings for those plans
+    const command = new ScanCommand({
+      TableName: BOOKINGS_TABLE,
+    });
+    
+    const response = await dynamoDb.send(command);
+    const allBookings = (response.Items || []) as DynamoDBBooking[];
+    
+    // Filter bookings that match vendor's plan IDs
+    return allBookings.filter(booking => planIds.includes(booking.planId));
+  } catch (error) {
+    console.error("Error getting bookings by vendor:", error);
+    return [];
+  }
+}
+
 export async function getBookingById(bookingId: string): Promise<DynamoDBBooking | null> {
   try {
     const command = new GetCommand({

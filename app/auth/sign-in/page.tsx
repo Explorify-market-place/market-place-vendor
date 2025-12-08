@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -22,10 +22,6 @@ import {
 
 export default function SignInPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const vendorParam = searchParams.get("vendor");
-  const isVendor = vendorParam === "1" || vendorParam === "true";
 
   const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
   const [authMethod, setAuthMethod] = useState<"oauth" | "email">("oauth");
@@ -46,21 +42,13 @@ export default function SignInPage() {
     { icon: Globe, text: "Global Destinations" },
   ];
 
-  const benefits = isVendor
-    ? [
-        "Zero commission fees for first month",
-        "Advanced analytics dashboard",
-        "Marketing tools and promotion",
-        "24/7 dedicated vendor support",
-        "Global customer reach",
-      ]
-    : [
-        "Best price guarantee",
-        "Instant booking confirmation",
-        "24/7 customer support",
-        "Flexible cancellation policy",
-        "Verified tour operators",
-      ];
+  const benefits = [
+    "Zero commission fees for first month",
+    "Advanced analytics dashboard",
+    "Marketing tools and promotion",
+    "24/7 dedicated vendor support",
+    "Global customer reach",
+  ];
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -69,14 +57,14 @@ export default function SignInPage() {
 
     try {
       const result = await signIn("google", {
-        callbackUrl,
+        callbackUrl: "/dashboard",
         redirect: false,
       });
 
       if (result?.error) {
         setError("Failed to sign in with Google");
-      } else if (result?.url) {
-        router.push(result.url);
+      } else if (result?.ok) {
+        router.push("/dashboard");
       }
     } catch (err) {
       setError("An unexpected error occurred");
@@ -100,7 +88,7 @@ export default function SignInPage() {
           email,
           password,
           name,
-          role: isVendor ? "vendor" : "user",
+          role: "vendor",
         }),
       });
 
@@ -127,14 +115,13 @@ export default function SignInPage() {
         const result = await signIn("credentials", {
           email: formData.email,
           password: formData.password,
-          callbackUrl,
           redirect: false,
         });
 
         if (result?.error) {
           setError("Invalid email or password");
-        } else if (result?.url) {
-          router.push(result.url);
+        } else if (result?.ok) {
+          router.push("/dashboard");
         }
       } else {
         // Handle signup
@@ -173,38 +160,24 @@ export default function SignInPage() {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 animate-fade-in">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
-                  {isVendor ? "Vendor Portal" : "Welcome Back"}
+                  Vendor Portal
                 </span>
               </div>
 
               {/* Heading */}
               <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-down">
-                {isVendor ? (
-                  <>
-                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      Become a
-                    </span>
-                    <br />
-                    <span className="text-foreground">Vendor</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      {authMode === "signin" ? "Sign in to" : "Join"}
-                    </span>
-                    <br />
-                    <span className="text-foreground">Explorify</span>
-                  </>
-                )}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {authMode === "signin" ? "Welcome Back" : "Become a"}
+                </span>
+                <br />
+                <span className="text-foreground">Vendor</span>
               </h1>
 
               {/* Description */}
               <p className="text-lg text-muted-foreground mb-8 animate-fade-in">
-                {isVendor
-                  ? "Join our platform and start offering amazing travel experiences to millions of travelers worldwide."
-                  : authMode === "signin"
-                  ? "Continue your journey and explore incredible destinations around the world."
-                  : "Create an account and start exploring amazing travel experiences."}
+                {authMode === "signin"
+                  ? "Sign in to manage your travel packages and grow your business."
+                  : "Join our platform and start offering amazing travel experiences to millions of travelers worldwide."}
               </p>
 
               {/* Auth Method Toggle */}
@@ -451,7 +424,7 @@ export default function SignInPage() {
             {/* Stats Card */}
             <div className="bg-background/40 backdrop-blur-lg border border-border/30 rounded-2xl p-6">
               <h3 className="text-2xl font-bold mb-6">
-                {isVendor ? "Why Vendors Love Us" : "Why Travelers Choose Us"}
+                Why Vendors Love Us
               </h3>
               <div className="space-y-4">
                 {benefits.map((benefit, index) => (
@@ -482,20 +455,18 @@ export default function SignInPage() {
                 ))}
               </div>
               <p className="text-foreground mb-4 italic">
-                {isVendor
-                  ? "Explorify helped me grow my tour business beyond my wildest dreams. The platform is intuitive and the support team is phenomenal!"
-                  : "Best travel platform I've ever used! Found amazing hidden gems and the booking process was seamless. Highly recommended!"}
+                Explorify helped me grow my tour business beyond my wildest dreams. The platform is intuitive and the support team is phenomenal!
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {isVendor ? "SC" : "JD"}
+                  SC
                 </div>
                 <div>
                   <div className="font-semibold">
-                    {isVendor ? "Sarah Chen" : "John Doe"}
+                    Sarah Chen
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {isVendor ? "Tour Operator" : "Travel Enthusiast"}
+                    Tour Operator
                   </div>
                 </div>
               </div>
@@ -503,18 +474,11 @@ export default function SignInPage() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4">
-              {(isVendor
-                ? [
-                    { value: "20+", label: "Vendors" },
-                    { value: "50+", label: "Travelers" },
-                    { value: "90%", label: "Satisfaction" },
-                  ]
-                : [
-                    { value: "100+", label: "Destinations" },
-                    { value: "50+", label: "Travelers" },
-                    { value: "4.9★", label: "Rating" },
-                  ]
-              ).map((stat, index) => (
+              {[
+                { value: "20+", label: "Vendors" },
+                { value: "500+", label: "Travelers" },
+                { value: "95%", label: "Satisfaction" },
+              ].map((stat, index) => (
                 <div
                   key={index}
                   className="bg-background/40 backdrop-blur-lg border border-border/30 rounded-xl p-4 text-center hover:scale-105 transition-all duration-200"
