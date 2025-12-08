@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params).id;
+    const { id: planId } = await params;
 
     const command = new GetCommand({
       TableName: PLANS_TABLE,
@@ -40,7 +40,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params).id;
+    const { id: planId } = await params;
     const body = await request.json();
     const { ...updates } = body;
 
@@ -92,7 +92,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const planId = (await params).id;
+    const { id: planId } = await params;
 
     // Hard delete
     const command = new DeleteCommand({

@@ -57,6 +57,8 @@ const config: NextAuthConfig = {
           email: existingUser.email,
           name: existingUser.name,
           image: existingUser.image,
+          role: existingUser.role,
+          vendorVerified: existingUser.vendorVerified,
         };
       },
     }),
