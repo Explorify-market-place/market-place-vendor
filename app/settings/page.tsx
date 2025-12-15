@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getUserById } from "@/lib/db-helpers";
-import VendorDashboard from "@/components/dashboard/VendorDashboard";
+import SettingsForm from "@/components/settings/SettingsForm";
 
-export default async function DashboardPage() {
+export default async function SettingsPage() {
   const session = await auth();
 
   // Redirect if not authenticated
@@ -11,7 +11,7 @@ export default async function DashboardPage() {
     redirect("/auth/sign-in");
   }
 
-  // Fetch fresh user data from database (not from token)
+  // Fetch fresh user data from database
   const dbUser = await getUserById(session.user.id);
 
   // If user not found in database or not a vendor
@@ -19,14 +19,5 @@ export default async function DashboardPage() {
     redirect("/auth/sign-in");
   }
 
-  // Prepare user object with FRESH data from database
-  const user = {
-    id: dbUser.userId,
-    name: dbUser.name,
-    email: dbUser.email,
-    role: dbUser.role,
-    vendorVerified: dbUser.vendorVerified, 
-  };
-
-  return <VendorDashboard user={user} />;
+  return <SettingsForm />;
 }

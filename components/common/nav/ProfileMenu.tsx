@@ -4,22 +4,18 @@ import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  User, 
-  Settings, 
-  LogOut, 
-  Heart, 
-  CreditCard, 
+import {
+  Settings,
+  LogOut,
   HelpCircle,
   ChevronRight,
   Bell,
   Moon,
   Sun,
   Shield,
-  Briefcase,
   LayoutDashboard,
-  Package,
-  BarChart
+  Ticket,
+  BarChart,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -51,31 +47,12 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  // Role-specific menu items
-  const getRoleSpecificItems = () => {
-    switch (user?.role) {
-      case "vendor":
-        return [
-          { href: "/vendor/dashboard", label: "Vendor Dashboard", icon: LayoutDashboard },
-          { href: "/vendor/trips", label: "Manage Packages", icon: Package },
-          { href: "/vendor/analytics", label: "Analytics", icon: BarChart },
-        ];
-      case "admin":
-        return [
-          { href: "/admin/dashboard", label: "Admin Dashboard", icon: Shield },
-          { href: "/admin/users", label: "Manage Users", icon: User },
-          { href: "/admin/vendors", label: "Manage Vendors", icon: Briefcase },
-        ];
-      default:
-        return [
-          { href: "/profile/trips", label: "My Trips", icon: Package },
-          { href: "/profile/saved", label: "Saved", icon: Heart },
-          { href: "/profile/payments", label: "Payment Methods", icon: CreditCard },
-        ];
-    }
-  };
-
-  const roleSpecificItems = getRoleSpecificItems();
+  // Vendor menu items
+  const menuItems = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/bookings", label: "Bookings", icon: Ticket },
+    { href: "/analytics", label: "Analytics", icon: BarChart },
+  ];
 
   return (
     <div className="relative" ref={menuRef}>
@@ -87,7 +64,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
         <div className="relative">
           {/* Notification Dot */}
           <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
-          
+
           {/* Avatar */}
           <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent group-hover:ring-primary/30 transition-all duration-200">
             {user?.image ? (
@@ -105,7 +82,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
             )}
           </div>
         </div>
-        
+
         {/* Name (hidden on mobile) */}
         <span className="hidden md:block text-sm font-medium max-w-[100px] truncate">
           {user?.name?.split(" ")[0] || "User"}
@@ -135,8 +112,12 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold truncate">{user?.name || "User"}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  <p className="text-sm font-semibold truncate">
+                    {user?.name || "User"}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {user?.email}
+                  </p>
                   {user?.role !== "user" && (
                     <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
                       <Shield className="w-3 h-3" />
@@ -153,33 +134,27 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
                 <button className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-all duration-200">
                   <Bell className="w-4 h-4" />
                   <span className="text-xs">Notifications</span>
-                  <span className="px-1.5 py-0.5 bg-red-500 text-white rounded-full text-xs font-medium">3</span>
                 </button>
-                <button 
+                <button
                   onClick={toggleTheme}
                   className="flex-1 flex items-center justify-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-all duration-200"
                 >
-                  {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                  <span className="text-xs">{theme === "dark" ? "Light" : "Dark"}</span>
+                  {theme === "dark" ? (
+                    <Sun className="w-4 h-4" />
+                  ) : (
+                    <Moon className="w-4 h-4" />
+                  )}
+                  <span className="text-xs">
+                    {theme === "dark" ? "Light" : "Dark"}
+                  </span>
                 </button>
               </div>
             </div>
 
             {/* Menu Items */}
             <div className="p-2">
-              {/* Profile Link */}
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent/50 transition-all duration-200 group"
-                onClick={() => setIsOpen(false)}
-              >
-                <User className="w-4 h-4 text-muted-foreground group-hover:text-foreground" />
-                <span className="flex-1 text-sm">My Profile</span>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-
-              {/* Role Specific Items */}
-              {roleSpecificItems.map((item) => {
+              {/* Main Navigation Items */}
+              {menuItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link

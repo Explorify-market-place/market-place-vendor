@@ -85,9 +85,9 @@ const config: NextAuthConfig = {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           });
-        } else if (existing.role !== "vendor") {
-          // Prevent non-vendors from signing in
-          return false;
+        } else if (existing.role !== "vendor" && existing.role !== "admin") {
+          // Block non-vendor users - they should use explorifytrips.com
+          throw new Error("REDIRECT_TO_USER_SITE");
         }
       }
 
@@ -106,7 +106,7 @@ const config: NextAuthConfig = {
       if (user) {
         token.email = user.email;
       }
-      
+
       // Fetch user data from database if not already in token
       if (token.email && !token.userId) {
         const dbUser = await getUserByEmail(token.email);
@@ -116,7 +116,7 @@ const config: NextAuthConfig = {
           token.vendorVerified = dbUser.vendorVerified;
         }
       }
-      
+
       return token;
     },
   },

@@ -36,6 +36,13 @@ export interface DynamoDBUser {
     organizationName?: string;
     address?: string;
     phoneNumber?: string;
+    bankDetails?: {
+      accountHolderName?: string;
+      accountNumber?: string;
+      ifscCode?: string;
+      bankName?: string;
+      upiId?: string;
+    };
   };
   createdAt: string;
   updatedAt: string;

@@ -5,10 +5,9 @@ import { ModeToggle } from "./ModeToggle";
 import { Button } from "../../ui/button";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-import ProfileMenu from "../../ProfileMenu";
+import ProfileMenu from "./ProfileMenu";
 import {
   LayoutDashboard,
-  Package,
   Ticket,
   BarChart3,
   Settings,
@@ -31,7 +30,6 @@ export default function Navbar() {
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/packages", label: "My Packages", icon: Package },
     { href: "/bookings", label: "Bookings", icon: Ticket },
     { href: "/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/settings", label: "Settings", icon: Settings },
