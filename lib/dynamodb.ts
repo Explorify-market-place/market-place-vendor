@@ -56,6 +56,7 @@ export interface DynamoDBPlan {
   route: string[];
   description: string;
   price: number;
+  vendorCut?: number; // Percentage vendor receives (default 85%)
   createdAt: string;
   updatedAt: string;
   isActive: boolean;
@@ -65,9 +66,27 @@ export interface DynamoDBBooking {
   bookingId: string;
   planId: string;
   userId: string;
-  dateBooked: string;
+  dateBooked: string; // Trip start date
   numPeople: number;
   paymentStatus: "pending" | "completed" | "failed";
-  totalAmount: number;
+  bookingStatus?: "confirmed" | "cancelled" | "completed"; // Trip status
+  totalAmount: number; // Total paid by user (trip cost + platform fee)
   createdAt: string;
+
+  // Razorpay payment fields
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+
+  // Refund tracking
+  refundStatus: "none" | "requested" | "processing" | "completed" | "rejected";
+  refundAmount?: number;
+  refundDate?: string;
+  razorpayRefundId?: string;
+
+  // Vendor payout tracking
+  vendorPayoutStatus: "pending" | "processing" | "completed" | "failed";
+  vendorPayoutAmount?: number; // Amount to transfer to vendor (85% of trip cost)
+  vendorPayoutDate?: string;
+  platformCut?: number; // Platform revenue from trip cost (15% default)
 }
