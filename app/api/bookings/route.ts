@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { planId, dateBooked, numPeople, totalAmount } = body;
+    const { planId, tripDate, numPeople, totalAmount } = body;
 
-    if (!planId || !dateBooked || !numPeople || !totalAmount) {
+    if (!planId || !tripDate || !numPeople || !totalAmount) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -63,10 +63,12 @@ export async function POST(request: NextRequest) {
       bookingId: randomUUID(),
       userId: session.user.id,
       planId,
-      dateBooked,
+      tripDate,
       numPeople: Number(numPeople),
       totalAmount: Number(totalAmount),
       paymentStatus: "pending",
+      refundStatus: "none",
+      vendorPayoutStatus: "pending",
       createdAt: new Date().toISOString(),
     });
 

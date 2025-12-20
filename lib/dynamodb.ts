@@ -66,7 +66,7 @@ export interface DynamoDBBooking {
   bookingId: string;
   planId: string;
   userId: string;
-  dateBooked: string; // Trip start date
+  tripDate: string; // Trip start date
   numPeople: number;
   paymentStatus: "pending" | "completed" | "failed";
   bookingStatus?: "confirmed" | "cancelled" | "completed"; // Trip status
