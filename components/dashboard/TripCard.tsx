@@ -14,7 +14,7 @@ import {
   Activity,
   AlertTriangle,
 } from "lucide-react";
-import { DepartureManager } from "./DepartureManager";
+import { DepartureCalendar } from "./DepartureCalendar";
 
 interface TripCardProps {
   trip: {
@@ -197,10 +197,10 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           </div>
         </div>
       )}
-      
-      {/* Departure Manager Modal */}
+
+      {/* Departure Calendar Modal */}
       {showDepartures && (
-        <DepartureManager
+        <DepartureCalendar
           planId={trip.planId}
           onClose={() => setShowDepartures(false)}
         />

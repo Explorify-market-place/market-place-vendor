@@ -134,6 +134,7 @@ export async function POST(request: NextRequest) {
       totalCapacity: Number(totalCapacity),
       bookedSeats: 0,
       status: "scheduled",
+      isActive: true, // New departures are active by default
       createdAt: now,
       updatedAt: now,
     };

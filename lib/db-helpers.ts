@@ -296,6 +296,25 @@ export async function getBookingById(
   }
 }
 
+export async function getBookingsByPlan(
+  planId: string
+): Promise<DynamoDBBooking[]> {
+  try {
+    const command = new ScanCommand({
+      TableName: BOOKINGS_TABLE,
+      FilterExpression: "planId = :planId",
+      ExpressionAttributeValues: {
+        ":planId": planId,
+      },
+    });
+    const response = await dynamoDb.send(command);
+    return (response.Items || []) as DynamoDBBooking[];
+  } catch (error) {
+    console.error("Error getting bookings by plan:", error);
+    return [];
+  }
+}
+
 export async function updateBookingStatus(
   bookingId: string,
   paymentStatus: "pending" | "completed" | "failed"
@@ -308,6 +327,37 @@ export async function updateBookingStatus(
       ":status": paymentStatus,
     },
   });
+  await dynamoDb.send(command);
+}
+
+export async function updateBooking(
+  bookingId: string,
+  updates: Partial<DynamoDBBooking>
+): Promise<void> {
+  const updateExpressions: string[] = [];
+  const expressionAttributeValues: any = {};
+  const expressionAttributeNames: any = {};
+
+  Object.entries(updates).forEach(([key, value], index) => {
+    if (key !== "bookingId") {
+      const attributeName = `#attr${index}`;
+      const attributeValue = `:val${index}`;
+      updateExpressions.push(`${attributeName} = ${attributeValue}`);
+      expressionAttributeNames[attributeName] = key;
+      expressionAttributeValues[attributeValue] = value;
+    }
+  });
+
+  if (updateExpressions.length === 0) return;
+
+  const command = new UpdateCommand({
+    TableName: BOOKINGS_TABLE,
+    Key: { bookingId },
+    UpdateExpression: `SET ${updateExpressions.join(", ")}`,
+    ExpressionAttributeNames: expressionAttributeNames,
+    ExpressionAttributeValues: expressionAttributeValues,
+  });
+
   await dynamoDb.send(command);
 }
 
