@@ -1,7 +1,5 @@
 import { DynamoDBClient, CreateTableCommand, DescribeTableCommand, KeyType, ScalarAttributeType } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import * as dotenv from "dotenv";
-import { randomUUID } from "crypto";
 
 // Load environment variables
 dotenv.config({ path: ".env.local" });
@@ -14,12 +12,11 @@ const client = new DynamoDBClient({
   },
 });
 
-const docClient = DynamoDBDocumentClient.from(client);
-
 // Table names from environment or defaults
 const USERS_TABLE = process.env.DYNAMODB_USERS_TABLE || "Users";
 const PLANS_TABLE = process.env.DYNAMODB_PLANS_TABLE || "TravelPlans";
 const BOOKINGS_TABLE = process.env.DYNAMODB_BOOKINGS_TABLE || "Bookings";
+const DEPARTURES_TABLE = process.env.DYNAMODB_DEPARTURES_TABLE || "Departures";
 
 async function createTable(tableName: string, keySchema: { AttributeName: string; KeyType: KeyType }[], attributeDefinitions: { AttributeName: string; AttributeType: ScalarAttributeType }[]) {
   try {
@@ -81,106 +78,19 @@ async function createAllTables() {
     [{ AttributeName: "bookingId", KeyType: KeyType.HASH }],
     [{ AttributeName: "bookingId", AttributeType: ScalarAttributeType.S }]
   );
-}
 
-async function seedData() {
-  try {
-    // Seed sample plans
-    const samplePlans = [
-      {
-        planId: randomUUID(),
-        vendorId: "default-vendor",
-        name: "Golden Triangle Tour",
-        image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=500",
-        route: ["Delhi", "Agra", "Jaipur", "Delhi"],
-        description: "Experience India's most iconic destinations - Delhi's historic monuments, Agra's Taj Mahal, and Jaipur's royal palaces",
-        price: 45000,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isActive: true,
-      },
-      {
-        planId: randomUUID(),
-        vendorId: "default-vendor",
-        name: "Kerala Backwaters Journey",
-        image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=500",
-        route: ["Kochi", "Munnar", "Thekkady", "Alleppey", "Kochi"],
-        description: "Cruise through Kerala's serene backwaters, explore tea plantations, and enjoy houseboat stays",
-        price: 38000,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isActive: true,
-      },
-      {
-        planId: randomUUID(),
-        vendorId: "default-vendor",
-        name: "Himalayan Adventure",
-        image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=500",
-        route: ["Manali", "Rohtang Pass", "Leh", "Nubra Valley", "Pangong Lake"],
-        description: "Trek through breathtaking mountain landscapes and experience the beauty of Ladakh",
-        price: 65000,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isActive: true,
-      },
-    ];
-
-    for (const plan of samplePlans) {
-      const command = new PutCommand({
-        TableName: PLANS_TABLE,
-        Item: plan,
-      });
-      await docClient.send(command);
-      console.log(`Added plan: ${plan.name}`);
-    }
-
-    // Seed sample users
-    const sampleUsers = [
-      {
-        userId: randomUUID(),
-        name: "Admin User",
-        email: "admin@explorify.com",
-        role: "admin",
-        vendorVerified: true,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        userId: randomUUID(),
-        name: "Vendor User",
-        email: "vendor@explorify.com",
-        role: "vendor",
-        vendorVerified: true,
-        vendorInfo: {
-          organizationName: "Adventure Tours Co.",
-          address: "123 Travel Street, Mumbai",
-          phoneNumber: "+91-9876543210",
-        },
-        createdAt: new Date().toISOString(),
-      },
-    ];
-
-    for (const user of sampleUsers) {
-      const command = new PutCommand({
-        TableName: USERS_TABLE,
-        Item: user,
-      });
-      await docClient.send(command);
-      console.log(`Added user: ${user.name}`);
-    }
-
-    console.log("Sample data added successfully");
-  } catch (error) {
-    console.error("Error seeding data:", error);
-    throw error;
-  }
+  // Departures table - partition key with GSI for plan queries
+  await createTable(
+    DEPARTURES_TABLE,
+    [{ AttributeName: "departureId", KeyType: KeyType.HASH }],
+    [{ AttributeName: "departureId", AttributeType: ScalarAttributeType.S }]
+  );
 }
 
 async function main() {
   try {
     console.log("Initializing DynamoDB tables...");
     await createAllTables();
-    console.log("Adding sample data...");
-    await seedData();
     console.log("DynamoDB initialization complete!");
   } catch (error) {
     console.error("Failed to initialize DynamoDB:", error);

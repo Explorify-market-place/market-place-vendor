@@ -14,6 +14,7 @@ import {
   Activity,
   AlertTriangle,
 } from "lucide-react";
+import { DepartureCalendar } from "./DepartureCalendar";
 
 interface TripCardProps {
   trip: {
@@ -34,6 +35,7 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [showDepartures, setShowDepartures] = useState(false);
 
   const handleDelete = async () => {
     setLoading(true);
@@ -128,6 +130,15 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           <Button
             variant="outline"
             size="sm"
+            onClick={() => setShowDepartures(true)}
+            className="flex-1"
+          >
+            <Calendar className="w-4 h-4 mr-1" />
+            Departures
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setEditing(!editing)}
             className="flex-1"
           >
@@ -185,6 +196,14 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Departure Calendar Modal */}
+      {showDepartures && (
+        <DepartureCalendar
+          planId={trip.planId}
+          onClose={() => setShowDepartures(false)}
+        />
       )}
     </Card>
   );
