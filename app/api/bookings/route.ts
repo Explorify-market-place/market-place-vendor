@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { createBooking, getBookingsByUser, getBookingsByVendor } from "@/lib/db-helpers";
-import { randomUUID } from "crypto";
+import { getBookingsByUser, getBookingsByVendor } from "@/lib/db-helpers";
 
 // GET - list bookings for current user or vendor
 export async function GET(request: NextRequest) {
@@ -40,50 +39,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-// POST - create a booking
-export async function POST(request: NextRequest) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await request.json();
-    const { planId, tripDate, numPeople, totalAmount } = body;
-
-    if (!planId || !tripDate || !numPeople || !totalAmount) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    const booking = await createBooking({
-      bookingId: randomUUID(),
-      userId: session.user.id,
-      planId,
-      tripDate,
-      numPeople: Number(numPeople),
-      totalAmount: Number(totalAmount),
-      paymentStatus: "pending",
-      refundStatus: "none",
-      vendorPayoutStatus: "pending",
-      createdAt: new Date().toISOString(),
-    });
-
-    return NextResponse.json({
-      success: true,
-      booking,
-      message: "Booking created successfully",
-    }, { status: 201 });
-  } catch (error) {
-    console.error("Error creating booking:", error);
-    return NextResponse.json(
-      { error: "Failed to create booking" },
-      { status: 500 }
-    );
-  }
-}
-
-
