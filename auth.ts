@@ -107,8 +107,8 @@ const config: NextAuthConfig = {
         token.email = user.email;
       }
 
-      // Fetch user data from database if not already in token
-      if (token.email && !token.userId) {
+      // Always fetch latest user data to keep verification status fresh
+      if (token.email) {
         const dbUser = await getUserByEmail(token.email);
         if (dbUser && dbUser.role === "vendor") {
           token.userId = dbUser.userId;

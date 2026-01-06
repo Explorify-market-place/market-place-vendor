@@ -58,6 +58,7 @@ export interface DynamoDBPlan {
   route: string[];
   description: string;
   price: number;
+  itinerary?: string; // PDF URL
   vendorCut?: number; // Percentage vendor receives (default 85%)
   createdAt: string;
   updatedAt: string;
