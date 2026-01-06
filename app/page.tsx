@@ -15,7 +15,7 @@ export default function LandingPage() {
     <main className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
 
       {/* ================= HEADER ================= */}
-      <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
+      {/* <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
@@ -43,7 +43,7 @@ export default function LandingPage() {
             </button>
           </div>
         </div>
-      </header>
+      </header> */}
 
  {/* ================= HERO SECTION ================= */}
 <section className="relative pt-24 pb-32 overflow-hidden">
@@ -376,20 +376,20 @@ export default function LandingPage() {
 
 
 {/* ================= RESOURCES ================= */}
-<section className="py-24 bg-white ">
+<section className="py-24 bg-white dark:bg-slate-950 ">
   <div className="max-w-7xl mx-auto px-6 ">
     {/* Header */}
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-14 ">
       <div>
-        <h2 className="text-4xl font-extrabold text-slate-900 ">
+        <h2 className="text-4xl font-extrabold text-slate-900 dark:text-slate-400">
           Vendor Resources
         </h2>
-        <p className="text-slate-600 mt-2">
+        <p className="text-slate-600 mt-2 dark:text-slate-400">
           Guides and insights to help you grow.
         </p>
       </div>
 
-      <button className="text-blue-600 font-semibold hover:underline">
+      <button className="text-blue-600 font-semibold hover:underline dark:text-blue-400">
         View All Resources →
       </button>
     </div>
@@ -447,10 +447,10 @@ export default function LandingPage() {
 </section>
 
 {/* ================= CTA ================= */}
-<section className="bg-gradient-to-br from-slate-900 to-slate-800 py-24 text-center">
+<section className="bg-gradient-to-br dark:from-slate-950 dark:to-slate-900 from-slate-50 to-slate-100 py-24 text-center">
   <div className="max-w-3xl mx-auto px-6">
     <div className="text-yellow-400 text-4xl mb-4">⚡</div>
-    <h2 className="text-4xl font-extrabold text-white">
+    <h2 className="text-4xl font-extrabold text-slate-900 dark:text-slate-400">
      "Over 60% of new vendors receive their first booking within 30 days of listing."
     </h2>
 

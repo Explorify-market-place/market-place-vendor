@@ -43,8 +43,8 @@ export default function RootLayout({
         className="
           font-display
           antialiased
-          bg-white
-          text-slate-900
+          bg-background
+          text-foreground
         "
       >
         <AuthProvider>

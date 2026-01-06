@@ -16,6 +16,7 @@ import {
   AlertCircle,
   ImageIcon,
 } from "lucide-react";
+import { FileUpload } from "@/components/ui/file-upload";
 
 export default function SettingsForm() {
   const { data: session } = useSession();
@@ -116,7 +117,7 @@ export default function SettingsForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 py-24 px-4">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 py-24 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -195,26 +196,15 @@ export default function SettingsForm() {
                 <label className="block text-sm font-medium mb-2">
                   Profile Image URL
                 </label>
-                <div className="flex gap-3">
-                  <div className="relative flex-1">
-                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <input
-                      type="url"
-                      value={formData.image}
-                      onChange={(e) =>
-                        setFormData({ ...formData, image: e.target.value })
-                      }
-                      placeholder="https://example.com/image.jpg"
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-background/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                  {formData.image && (
-                    <img
-                      src={formData.image}
-                      alt="Preview"
-                      className="w-12 h-12 rounded-full object-cover border-2 border-border"
-                    />
-                  )}
+                <div className="space-y-4">
+                  <FileUpload
+                    endpoint="profileImage"
+                    value={formData.image}
+                    onChange={(url) =>
+                      setFormData({ ...formData, image: url || "" })
+                    }
+                    onRemove={() => setFormData({ ...formData, image: "" })}
+                  />
                 </div>
               </div>
             </div>
@@ -423,7 +413,7 @@ export default function SettingsForm() {
             <Button
               type="submit"
               disabled={saving}
-              className="flex-1 rounded-xl py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              className="flex-1 rounded-xl py-6 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               {saving ? (
                 <>

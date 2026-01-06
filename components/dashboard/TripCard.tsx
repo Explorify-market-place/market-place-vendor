@@ -14,25 +14,17 @@ import {
   Activity,
   AlertTriangle,
 } from "lucide-react";
+import { TripForm } from "./TripForm";
 import { DepartureCalendar } from "./DepartureCalendar";
+import { DynamoDBPlan } from "@/lib/dynamodb";
 
 interface TripCardProps {
-  trip: {
-    planId: string;
-    name: string;
-    image: string;
-    route: string[];
-    description: string;
-    price: number;
-    createdAt: string;
-    updatedAt: string;
-    isActive: boolean;
-  };
+  trip: DynamoDBPlan;
   onUpdate: () => void;
 }
 
 export function TripCard({ trip, onUpdate }: TripCardProps) {
-  const [editing, setEditing] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [showDepartures, setShowDepartures] = useState(false);
@@ -75,7 +67,8 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
   };
 
   return (
-    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
+    <>
+      <Card className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300 group">
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -88,7 +81,14 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           className="object-cover transition-transform duration-300 hover:scale-105"
         />
         <div className="absolute top-4 right-4">
-          <Badge variant={trip.isActive ? "default" : "secondary"}>
+          <Badge
+            variant={trip.isActive ? "default" : "secondary"}
+            className={`${
+              trip.isActive
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-slate-500 hover:bg-slate-600"
+            } text-white border-0`}
+          >
             <Activity className="w-3 h-3 mr-1" />
             {trip.isActive ? "Active" : "Inactive"}
           </Badge>
@@ -139,11 +139,11 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setEditing(!editing)}
-            className="flex-1"
+            onClick={() => setShowEditForm(true)}
+            className="flex-1 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400"
           >
             <Edit3 className="w-4 h-4 mr-1" />
-            {editing ? "Cancel" : "Edit"}
+            Edit
           </Button>
           <Button
             variant="outline"
@@ -165,6 +165,7 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           </Button>
         </div>
       </CardContent>
+      </Card>
 
       {/* Confirmation Modal */}
       {confirmOpen && (
@@ -205,6 +206,18 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
           onClose={() => setShowDepartures(false)}
         />
       )}
-    </Card>
+      {/* Edit Trip Modal */}
+      {showEditForm && (
+        <TripForm
+          onClose={() => setShowEditForm(false)}
+          onSuccess={() => {
+            setShowEditForm(false);
+            onUpdate();
+          }}
+          vendorId={trip.vendorId}
+          initialData={trip}
+        />
+      )}
+    </>
   );
 }
