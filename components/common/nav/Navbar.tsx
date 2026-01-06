@@ -30,8 +30,8 @@ export default function Navbar() {
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/bookings", label: "Bookings", icon: Ticket },
-    { href: "/analytics", label: "Analytics", icon: BarChart3 },
+    //{ href: "/bookings", label: "Bookings", icon: Ticket },
+    //{ href: "/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
 
