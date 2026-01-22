@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       accessibility,
       createdAt: now,
       updatedAt: now,
-      isActive: true,
+      isActive: false,
     };
 
     const command = new PutCommand({
