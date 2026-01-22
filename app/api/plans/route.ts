@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching plans:", error);
     return NextResponse.json(
       { error: "Failed to fetch plans" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -41,19 +41,37 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
-      vendorId = "default-vendor",
+      vendorId,
       name,
-      image,
-      route,
+      images,
       description,
+      fullDescription,
       price,
+      maxParticipants,
+      itinerary,
+      duration,
+      startingPoint,
+      endingPoint,
+      meetingPoint,
+      stops,
+      highlights,
+      included,
+      excluded,
+      whatToBring,
+      notAllowed,
+      notSuitableFor,
+      knowBeforeYouGo,
+      categories,
+      interests,
+      languages,
+      accessibility,
     } = body;
 
     // Validate required fields
-    if (!name || !route || !price) {
+    if (!vendorId || !name || !price) {
       return NextResponse.json(
-        { error: "Missing required fields: name, route, or price" },
-        { status: 400 }
+        { error: "Missing required fields: vendorId, name, or price" },
+        { status: 400 },
       );
     }
 
@@ -62,10 +80,28 @@ export async function POST(request: NextRequest) {
       planId: randomUUID(),
       vendorId,
       name,
-      image: image || "",
-      route: Array.isArray(route) ? route : [route],
+      images: images || [],
       description: description || "",
+      fullDescription,
       price: Number(price),
+      maxParticipants: maxParticipants ? Number(maxParticipants) : undefined,
+      itinerary,
+      duration: duration || { value: 1, unit: "days" },
+      startingPoint,
+      endingPoint,
+      meetingPoint,
+      stops: stops || [],
+      highlights: highlights || [],
+      included: included || [],
+      excluded: excluded || [],
+      whatToBring,
+      notAllowed,
+      notSuitableFor,
+      knowBeforeYouGo,
+      categories: categories || [],
+      interests: interests || [],
+      languages,
+      accessibility,
       createdAt: now,
       updatedAt: now,
       isActive: true,
@@ -83,7 +119,7 @@ export async function POST(request: NextRequest) {
     console.error("Error creating plan:", error);
     return NextResponse.json(
       { error: "Failed to create plan" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

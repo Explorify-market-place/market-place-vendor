@@ -17,6 +17,7 @@ import {
 import { TripForm } from "./TripForm";
 import { DepartureCalendar } from "./DepartureCalendar";
 import { DynamoDBPlan } from "@/lib/dynamodb";
+import { getPublicUrl } from "@/lib/s3";
 
 interface TripCardProps {
   trip: DynamoDBPlan;
@@ -73,8 +74,9 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
       <div className="relative h-48 overflow-hidden">
         <Image
           src={
-            trip.image ||
-            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500"
+            trip.images?.[0]
+              ? getPublicUrl(trip.images[0])
+              : "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500"
           }
           alt={trip.name}
           fill
@@ -99,12 +101,14 @@ export function TripCard({ trip, onUpdate }: TripCardProps) {
         <h3 className="text-xl font-bold text-gray-900 dark:text-white truncate">
           {trip.name}
         </h3>
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-          <MapPin className="w-4 h-4 mr-1" />
-          <span>
-            {trip.route[0]} → {trip.route[trip.route.length - 1]}
-          </span>
-        </div>
+        {(trip.startingPoint || trip.endingPoint) && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <MapPin className="w-4 h-4 mr-1" />
+            <span>
+              {trip.startingPoint || "Start"} → {trip.endingPoint || "End"}
+            </span>
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
