@@ -7,16 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init-db": "tsx scripts/init-dynamodb.ts"
+    "init-db": "tsx scripts/init-dynamodb.ts",
+    "init-s3": "tsx scripts/init-s3.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.873.0",
+    "@aws-sdk/client-s3": "^3.873.0",
     "@aws-sdk/lib-dynamodb": "^3.873.0",
+    "@aws-sdk/s3-request-presigner": "^3.873.0",
     "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-menubar": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.18",
-    "@uploadthing/react": "^7.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.513.0",
@@ -25,8 +27,8 @@
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.0",
-    "uploadthing": "^7.7.4"
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

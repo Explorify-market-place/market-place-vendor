@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,9 +22,11 @@ import {
   Upload,
   ArrowRight,
   Settings,
+  FileStack,
 } from "lucide-react";
 import { TripForm } from "@/components/dashboard/TripForm";
 import { TripCard } from "@/components/dashboard/TripCard";
+import { BulkPdfUpload } from "@/components/dashboard/BulkPdfUpload";
 import {
   checkVendorCompletion,
   getVendorCompletionMessage,
@@ -43,12 +46,13 @@ interface VendorDashboardProps {
 export default function VendorDashboard({ user }: VendorDashboardProps) {
   const router = useRouter();
   const [showTripForm, setShowTripForm] = useState(false);
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [trips, setTrips] = useState<any[]>([]);
   const [completionStatus, setCompletionStatus] =
     useState<VendorCompletionStatus | null>(null);
 
   // Fetch vendor data to check completion status
-  const fetchVendorData = async () => {
+  const fetchVendorData = useCallback(async () => {
     try {
       const response = await fetch("/api/vendor/settings");
       if (response.ok) {
@@ -59,9 +63,9 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
     } catch (error) {
       console.error("Error fetching vendor data:", error);
     }
-  };
+  }, []);
 
-  const fetchTrips = async () => {
+  const fetchTrips = useCallback(async () => {
     try {
       const response = await fetch(`/api/plans?vendorId=${user.id}`);
       const data = await response.json();
@@ -69,12 +73,12 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
     } catch (error) {
       console.error("Error fetching trips:", error);
     }
-  };
+  }, [user.id]);
 
   useEffect(() => {
     fetchVendorData();
     fetchTrips();
-  }, [user.id]);
+  }, [fetchVendorData, fetchTrips]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
@@ -150,7 +154,7 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
               </div>
               <Button
                 onClick={() => router.push("/settings")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Settings className="w-4 h-4 mr-2" />
                 Complete Profile
@@ -169,7 +173,7 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
                   <div>
                     <CardTitle className="text-xl">Profile Complete</CardTitle>
                     <CardDescription>
-                      You're all set to offer travel experiences!
+                      You&apos;re all set to offer travel experiences!
                     </CardDescription>
                   </div>
                 </div>
@@ -244,41 +248,45 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
               Your Trips
             </h2>
-            <Button
-              onClick={() => {
-                if (completionStatus?.isComplete) {
-                  setShowTripForm(true);
-                } else {
-                  router.push("/settings");
-                }
-              }}
-              className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/20"
-            >
-              {completionStatus?.isComplete ? (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New Trip
-                </>
-              ) : (
-                <>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Complete Profile First
-                </>
-              )}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => {
+                  if (completionStatus?.isComplete) {
+                    setShowBulkUpload(true);
+                  } else {
+                    toast.warning("Please complete your profile first");
+                  }
+                }}
+                variant="outline"
+                className="bg-white/70 dark:bg-slate-900/70"
+              >
+                <FileStack className="w-4 h-4 mr-2" />
+                Bulk Upload PDFs
+              </Button>
+              <Button
+                onClick={() => {
+                  if (completionStatus?.isComplete) {
+                    setShowTripForm(true);
+                  } else {
+                    router.push("/settings");
+                  }
+                }}
+                className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/20"
+              >
+                {completionStatus?.isComplete ? (
+                  <>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New Trip
+                  </>
+                ) : (
+                  <>
+                    <Settings className="w-4 h-4 mr-2" />
+                    Complete Profile First
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-
-          {/* Trip Form Modal */}
-          {showTripForm && (
-            <TripForm
-              onClose={() => setShowTripForm(false)}
-              onSuccess={() => {
-                setShowTripForm(false);
-                fetchTrips();
-              }}
-              vendorId={user.id}
-            />
-          )}
 
           {/* Active Trips */}
           <div className="space-y-4">
@@ -374,6 +382,28 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
           )}
         </div>
       </div>
+
+      {/* Trip Form Modal */}
+      {showTripForm && (
+        <TripForm
+          vendorId={user.id}
+          onClose={() => setShowTripForm(false)}
+          onSuccess={() => {
+            setShowTripForm(false);
+            fetchTrips();
+          }}
+        />
+      )}
+
+      {/* Bulk PDF Upload Modal */}
+      {showBulkUpload && (
+        <BulkPdfUpload
+          onClose={() => {
+            setShowBulkUpload(false);
+            fetchTrips();
+          }}
+        />
+      )}
     </div>
   );
 }

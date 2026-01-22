@@ -17,6 +17,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import { FileUpload } from "@/components/ui/file-upload";
+import { getPublicUrl } from "@/lib/s3";
 
 export default function SettingsForm() {
   const { data: session } = useSession();
