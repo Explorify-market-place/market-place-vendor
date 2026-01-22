@@ -72,7 +72,6 @@ async function configureCORS() {
                 "https://explorifytrips.com",
                 "https://www.explorifytrips.com",
                 "https://vendors.explorifytrips.com",
-                "http://localhost:3000", // For local development
               ],
               ExposeHeaders: ["ETag"],
               MaxAgeSeconds: 3000,
