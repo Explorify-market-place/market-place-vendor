@@ -71,7 +71,7 @@ async function configureCORS() {
               AllowedOrigins: [
                 "https://explorifytrips.com",
                 "https://www.explorifytrips.com",
-                "https://vendors.explorifytrips.com",
+                "https://vendor.explorifytrips.com",
               ],
               ExposeHeaders: ["ETag"],
               MaxAgeSeconds: 3000,
