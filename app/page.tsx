@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function LandingPage() {
   const { data: session } = useSession();
@@ -77,17 +78,18 @@ export default function LandingPage() {
     </div>
 
     {/* ================= RIGHT IMAGE + FLOATING CARDS ================= */}
-    <div className="relative w-full aspect-[4/3] lg:aspect-square max-h-[600px]">
+    <div className="relative w-full aspect-4/3 lg:aspect-square max-h-155">
 
       {/* Soft Glow Background */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 blur-3xl rounded-full -z-10" />
+      <div className="absolute inset-0 bg-linear-to-tr from-blue-500/20 to-purple-500/20 blur-3xl rounded-full -z-10" />
 
       {/* Main Image */}
       <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border bg-white">
-        <img
+        <Image
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK24U03f3qWCszFzno1P63U4pvK7OcR4g5pkBzlXwZifdcP-QYljMvYFSGNkKsbCJ8h3su_wrPdvNS62fkM7QARc1-FCkVsyVwQlyo8EgPdOt9SUAQ5mxxoBOFrJlXOyXmV-J-RbyVtebLtnt-k8ERpx2rJOjUF-2m-_l0rhZLSe-WzSq1TlbNpluETrnin5lLFQjCa-RrzIHVQm-1FiFfutzjBROi30cgWDfRa3z2FMPSn1w7ZjGe2PR-P58JOlfZOfM8Ra60hSOa"
           alt="Vendor working on dashboard"
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
         />
       </div>
 
@@ -108,7 +110,7 @@ export default function LandingPage() {
       </div>
 
       {/* ================= FLOATING CARD: PACKAGE LIVE ================= */}
-      <div className="absolute bottom-6 left-6 bg-white p-4 rounded-xl shadow-lg border max-w-[220px]">
+      <div className="absolute bottom-6 left-6 bg-white p-4 rounded-xl shadow-lg border max-w-55">
         <div className="flex gap-3">
           <div
             className="w-12 h-12 rounded-lg bg-cover bg-center"
@@ -423,11 +425,12 @@ export default function LandingPage() {
           className="group rounded-2xl overflow-hidden bg-white shadow hover:shadow-xl transition"
         >
           {/* Image */}
-          <div className="h-48 overflow-hidden">
-            <img
+          <div className="h-48 overflow-hidden relative">
+            <Image
               src={item.img}
               alt={item.title}
-              className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition duration-300"
             />
           </div>
 
@@ -447,7 +450,7 @@ export default function LandingPage() {
 </section>
 
 {/* ================= CTA ================= */}
-<section className="bg-gradient-to-br dark:from-slate-950 dark:to-slate-900 from-slate-50 to-slate-100 py-24 text-center">
+<section className="bg-linear-to-br dark:from-slate-950 dark:to-slate-900 from-slate-50 to-slate-100 py-24 text-center">
   <div className="max-w-3xl mx-auto px-6">
     <div className="text-yellow-400 text-4xl mb-4">⚡</div>
     <h2 className="text-4xl font-extrabold text-slate-900 dark:text-slate-400">
@@ -507,9 +510,11 @@ export default function LandingPage() {
 
           {/* 👤 Profile */}
           <div className="flex items-center gap-4 mt-8">
-            <img
+            <Image
               src={t.img}
               alt={t.name}
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>

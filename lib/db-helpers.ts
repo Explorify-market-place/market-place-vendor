@@ -448,48 +448,79 @@ export async function deleteDeparture(departureId: string): Promise<void> {
   await dynamoDb.send(command);
 }
 
+/**
+ * Atomically update booked seats for a departure.
+ * 
+ * HOW DYNAMODB MAKES THIS ATOMIC:
+ * DynamoDB uses optimistic locking via ConditionExpression. The update will only
+ * succeed if the condition is met at the exact moment of the write. If two requests
+ * try to update simultaneously, only ONE will succeed - the other gets
+ * ConditionalCheckFailedException and must retry.
+ * 
+ * This prevents race conditions like:
+ * - Two users trying to book the last seat simultaneously
+ * - Overbooking beyond capacity
+ * - Releasing more seats than were booked
+ * 
+ * @param departureId - The departure to update
+ * @param delta - Positive to reserve seats, negative to release seats
+ * @returns true if successful, false if constraints violated (capacity exceeded or negative seats)
+ */
+export async function updateBookedSeats(
+  departureId: string,
+  delta: number,
+): Promise<boolean> {
+  try {
+    // DynamoDB atomic update with conditional check
+    // This is a single atomic operation - no read-then-write race condition
+    const command = new UpdateCommand({
+      TableName: DEPARTURES_TABLE,
+      Key: { departureId },
+      // ADD is atomic - it reads current value and adds delta in one operation
+      UpdateExpression: "SET bookedSeats = bookedSeats + :delta, updatedAt = :updatedAt",
+      // Condition ensures we never go negative or exceed capacity
+      ConditionExpression: 
+        "attribute_exists(departureId) AND " +
+        "bookedSeats + :delta >= :zero AND " +
+        "bookedSeats + :delta <= totalCapacity",
+      ExpressionAttributeValues: {
+        ":delta": delta,
+        ":zero": 0,
+        ":updatedAt": new Date().toISOString(),
+      },
+      // Return the new value for logging
+      ReturnValues: "UPDATED_NEW",
+    });
+    
+    const result = await dynamoDb.send(command);
+    console.log(`Updated bookedSeats by ${delta}:`, result.Attributes?.bookedSeats);
+    return true;
+  } catch (error: any) {
+    if (error.name === "ConditionalCheckFailedException") {
+      console.log(
+        `Seat update rejected: delta=${delta} would violate constraints (capacity or negative seats)`,
+      );
+      return false;
+    }
+    console.error("Error updating booked seats:", error);
+    throw error;
+  }
+}
+
+// Legacy functions - kept for backward compatibility, delegate to updateBookedSeats
 export async function incrementBookedSeats(
   departureId: string,
   numPeople: number
 ): Promise<boolean> {
-  try {
-    const command = new UpdateCommand({
-      TableName: DEPARTURES_TABLE,
-      Key: { departureId },
-      UpdateExpression:
-        "SET bookedSeats = bookedSeats + :numPeople, updatedAt = :updatedAt",
-      ConditionExpression: "bookedSeats + :numPeople <= totalCapacity",
-      ExpressionAttributeValues: {
-        ":numPeople": numPeople,
-        ":updatedAt": new Date().toISOString(),
-      },
-    });
-    await dynamoDb.send(command);
-    return true;
-  } catch (error: any) {
-    if (error.name === "ConditionalCheckFailedException") {
-      console.log("Capacity exceeded - cannot book");
-      return false;
-    }
-    console.error("Error incrementing booked seats:", error);
-    throw error;
-  }
+  return updateBookedSeats(departureId, numPeople);
 }
 
 export async function decrementBookedSeats(
   departureId: string,
   numPeople: number
 ): Promise<void> {
-  const command = new UpdateCommand({
-    TableName: DEPARTURES_TABLE,
-    Key: { departureId },
-    UpdateExpression:
-      "SET bookedSeats = bookedSeats - :numPeople, updatedAt = :updatedAt",
-    ConditionExpression: "bookedSeats >= :numPeople",
-    ExpressionAttributeValues: {
-      ":numPeople": numPeople,
-      ":updatedAt": new Date().toISOString(),
-    },
-  });
-  await dynamoDb.send(command);
+  const success = await updateBookedSeats(departureId, -numPeople);
+  if (!success) {
+    throw new Error(`Failed to release ${numPeople} seats - would result in negative count`);
+  }
 }
