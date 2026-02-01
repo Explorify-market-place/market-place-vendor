@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { Button } from "../../ui/button";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
 import ProfileMenu from "./ProfileMenu";
 import {
   LayoutDashboard,
@@ -18,15 +17,6 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -39,17 +29,7 @@ export default function Navbar() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 px-4 py-3 transition-all duration-300 pointer-events-none">
-      <div
-        className={`
-          mx-auto max-w-7xl rounded-2xl transition-all duration-500 pointer-events-auto
-          border backdrop-blur-md
-          ${
-            scrolled
-              ? "bg-white/90 dark:bg-slate-950/90 shadow-2xl border-slate-200 dark:border-slate-800"
-              : "bg-white/70 dark:bg-slate-950/70 shadow-lg border-white/20 dark:border-slate-800/50"
-          }
-        `}
-      >
+      <div className="mx-auto max-w-7xl rounded-2xl transition-all duration-500 pointer-events-auto border backdrop-blur-md bg-white/70 dark:bg-slate-950/70 shadow-lg border-white/20 dark:border-slate-800/50">
         <div className="px-6 h-16 flex items-center justify-between gap-6">
           {/* Logo Section */}
           <Link
