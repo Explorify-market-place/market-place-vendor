@@ -158,9 +158,9 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
 
       {/* Floating Orbs */}
       <div className="absolute top-20 left-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
@@ -171,7 +171,7 @@ export default function SignInForm() {
           {/* Left Side - Auth Form */}
           <div className="relative max-w-md mx-auto lg:mx-0">
             {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-60" />
+            <div className="absolute inset-0 bg-linear-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-60" />
 
             {/* Main Card */}
             <div className="relative bg-background/60 backdrop-blur-xl border border-border/50 rounded-3xl p-8 md:p-12 shadow-2xl">
@@ -185,7 +185,7 @@ export default function SignInForm() {
 
               {/* Heading */}
               <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-down">
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {authMode === "signin" ? "Welcome Back" : "Become a"}
                 </span>
                 <br />
@@ -207,7 +207,7 @@ export default function SignInForm() {
                     onClick={handleGoogleSignIn}
                     disabled={isLoading}
                     size="lg"
-                    className="w-full rounded-full py-6 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 mb-6 animate-scale-in"
+                    className="w-full rounded-full py-6 text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 mb-6 animate-scale-in"
                   >
                     {isLoading ? (
                       <>
@@ -356,7 +356,7 @@ export default function SignInForm() {
                       type="submit"
                       disabled={isLoading}
                       size="lg"
-                      className="w-full rounded-full py-6 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                      className="w-full rounded-full py-6 text-lg bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
                     >
                       {isLoading ? (
                         <>
@@ -419,7 +419,7 @@ export default function SignInForm() {
                       className="flex items-center gap-2 p-3 rounded-xl bg-accent/50 border border-border/30 hover:border-primary/30 transition-all duration-200"
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shrink-0">
                         <Icon className="w-4 h-4 text-white" />
                       </div>
                       <span className="text-sm font-medium">
@@ -450,7 +450,7 @@ export default function SignInForm() {
                     className="flex items-center gap-3 group"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
+                    <div className="w-6 h-6 rounded-full bg-linear-to-br from-green-500 to-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
                       <CheckCircle2 className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-foreground font-medium">
@@ -477,7 +477,7 @@ export default function SignInForm() {
                 phenomenal!
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                   SC
                 </div>
                 <div>
@@ -500,7 +500,7 @@ export default function SignInForm() {
                   key={index}
                   className="bg-background/40 backdrop-blur-lg border border-border/30 rounded-xl p-4 text-center hover:scale-105 transition-all duration-200"
                 >
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <div className="text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     {stat.value}
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">

@@ -91,7 +91,7 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
         </div>
 
         {/* Name (hidden on mobile) */}
-        <span className="hidden md:block text-sm font-medium max-w-[100px] truncate text-slate-700 dark:text-slate-200">
+        <span className="hidden md:block text-sm font-medium max-w-25 truncate text-slate-700 dark:text-slate-200">
           {user?.name?.split(" ")[0] || "User"}
         </span>
       </button>
