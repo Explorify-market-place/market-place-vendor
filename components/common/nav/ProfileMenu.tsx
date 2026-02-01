@@ -20,7 +20,14 @@ import {
 import { useTheme } from "next-themes";
 
 interface ProfileMenuProps {
-  user: any;
+  user: {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+    vendorVerified?: boolean;
+  };
 }
 
 export default function ProfileMenu({ user }: ProfileMenuProps) {

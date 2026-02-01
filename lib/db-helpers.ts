@@ -9,6 +9,10 @@ import {
   DynamoDBBooking,
   DynamoDBDeparture,
 } from "./dynamodb";
+import type {
+  ExpressionAttributeValues,
+  ExpressionAttributeNames,
+} from "@/types/dynamodb-utils";
 import {
   GetCommand,
   PutCommand,
@@ -71,8 +75,8 @@ export async function updateUser(
   updates: Partial<DynamoDBUser>
 ): Promise<void> {
   const updateExpressions: string[] = [];
-  const expressionAttributeValues: any = {};
-  const expressionAttributeNames: any = {};
+  const expressionAttributeValues: ExpressionAttributeValues = {};
+  const expressionAttributeNames: ExpressionAttributeNames = {};
 
   Object.entries(updates).forEach(([key, value], index) => {
     if (key !== "userId") {
@@ -186,8 +190,8 @@ export async function updatePlan(
   updates: Partial<DynamoDBPlan>
 ): Promise<void> {
   const updateExpressions: string[] = [];
-  const expressionAttributeValues: any = {};
-  const expressionAttributeNames: any = {};
+  const expressionAttributeValues: ExpressionAttributeValues = {};
+  const expressionAttributeNames: ExpressionAttributeNames = {};
 
   Object.entries(updates).forEach(([key, value], index) => {
     if (key !== "planId") {
@@ -335,8 +339,8 @@ export async function updateBooking(
   updates: Partial<DynamoDBBooking>
 ): Promise<void> {
   const updateExpressions: string[] = [];
-  const expressionAttributeValues: any = {};
-  const expressionAttributeNames: any = {};
+  const expressionAttributeValues: ExpressionAttributeValues = {};
+  const expressionAttributeNames: ExpressionAttributeNames = {};
 
   Object.entries(updates).forEach(([key, value], index) => {
     if (key !== "bookingId") {
@@ -414,8 +418,8 @@ export async function updateDeparture(
   updates: Partial<DynamoDBDeparture>
 ): Promise<void> {
   const updateExpressions: string[] = [];
-  const expressionAttributeValues: any = {};
-  const expressionAttributeNames: any = {};
+  const expressionAttributeValues: ExpressionAttributeValues = {};
+  const expressionAttributeNames: ExpressionAttributeNames = {};
 
   Object.entries(updates).forEach(([key, value], index) => {
     if (key !== "departureId") {
@@ -495,8 +499,8 @@ export async function updateBookedSeats(
     const result = await dynamoDb.send(command);
     console.log(`Updated bookedSeats by ${delta}:`, result.Attributes?.bookedSeats);
     return true;
-  } catch (error: any) {
-    if (error.name === "ConditionalCheckFailedException") {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === "ConditionalCheckFailedException") {
       console.log(
         `Seat update rejected: delta=${delta} would violate constraints (capacity or negative seats)`,
       );

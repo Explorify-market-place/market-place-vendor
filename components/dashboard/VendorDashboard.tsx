@@ -32,6 +32,7 @@ import {
   getVendorCompletionMessage,
   type VendorCompletionStatus,
 } from "@/lib/vendor-utils";
+import type { DynamoDBPlan } from "@/types/dynamodb";
 
 interface VendorDashboardProps {
   user: {
@@ -47,7 +48,7 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
   const router = useRouter();
   const [showTripForm, setShowTripForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
-  const [trips, setTrips] = useState<any[]>([]);
+  const [trips, setTrips] = useState<DynamoDBPlan[]>([]);
   const [completionStatus, setCompletionStatus] =
     useState<VendorCompletionStatus | null>(null);
 
@@ -212,7 +213,7 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
                       Active Trips
                     </p>
                     <p className="text-3xl font-bold text-slate-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
-                      {trips.filter((trip: any) => trip.isActive).length}
+                      {trips.filter((trip) => trip.isActive).length}
                     </p>
                   </div>
                   <div className="p-3 rounded-2xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">

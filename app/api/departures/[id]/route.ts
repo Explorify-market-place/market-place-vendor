@@ -6,6 +6,7 @@ import {
   deleteDeparture,
   getPlanById,
 } from "@/lib/db-helpers";
+import type { DynamoDBDeparture } from "@/types/dynamodb";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -82,7 +83,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const { departureDate, pickupLocation, pickupTime, totalCapacity, status } =
       body;
 
-    const updates: any = {
+    const updates: Partial<DynamoDBDeparture> & { updatedAt: string } = { 
       updatedAt: new Date().toISOString(),
     };
 
