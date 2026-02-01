@@ -149,8 +149,9 @@ export default function SignInForm() {
         setAuthMode("signin");
         setFormData({ name: "", email: formData.email, password: "" });
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

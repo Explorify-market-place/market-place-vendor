@@ -64,7 +64,7 @@ const config: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account }: any) {
+    async signIn({ user, account }) {
       if (!user?.email) return false;
 
       // For OAuth (Google) sign in
@@ -93,15 +93,15 @@ const config: NextAuthConfig = {
 
       return true;
     },
-    async session({ session, token }: any) {
+    async session({ session, token }) {
       if (session.user && token.userId) {
-        session.user.id = token.userId;
-        session.user.role = token.role;
-        session.user.vendorVerified = token.vendorVerified;
+        session.user.id = token.userId as string;
+        session.user.role = token.role as string;
+        session.user.vendorVerified = token.vendorVerified as boolean;
       }
       return session;
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }) {
       // On first sign in (when user object exists)
       if (user) {
         token.email = user.email;
@@ -109,7 +109,7 @@ const config: NextAuthConfig = {
 
       // Always fetch latest user data to keep verification status fresh
       if (token.email) {
-        const dbUser = await getUserByEmail(token.email);
+        const dbUser = await getUserByEmail(token.email as string);
         if (dbUser && dbUser.role === "vendor") {
           token.userId = dbUser.userId;
           token.role = dbUser.role;

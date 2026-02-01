@@ -25,20 +25,13 @@ import {
 } from "lucide-react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { BulkImageUpload } from "@/components/dashboard/BulkImageUpload";
+import type { DynamoDBPlan, Stop } from "@/types/dynamodb";
 
 interface TripFormProps {
   onClose: () => void;
   onSuccess: () => void;
   vendorId: string;
-  initialData?: any;
-}
-
-interface Stop {
-  name: string;
-  description: string;
-  activities: string[];
-  duration: number;
-  order: number;
+  initialData?: Partial<DynamoDBPlan>;
 }
 
 export function TripForm({
@@ -244,7 +237,7 @@ export function TripForm({
     setStops([...stops, newStop]);
   };
 
-  const updateStop = (index: number, field: keyof Stop, value: any) => {
+  const updateStop = (index: number, field: keyof Stop, value: Stop[keyof Stop]) => {
     const updatedStops = [...stops];
     updatedStops[index] = { ...updatedStops[index], [field]: value };
     setStops(updatedStops);
