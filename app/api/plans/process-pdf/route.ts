@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         pdf: pdfKey, // Send S3 key like: "itineraries/temp-uuid-timestamp-spiti.pdf"
+        secret: process.env.API_SECRET
       }),
     });
 
