@@ -33,4 +33,10 @@ export type {
 } from "./dynamodb-utils";
 
 // API types
-export type { ApiResponse, PaginatedResponse, ErrorResponse } from "./api";
+export type {
+  ApiResponse,
+  PaginatedResponse,
+  ErrorResponse,
+  LambdaExtractionResponse,
+  PlanExtractionResult,
+} from "./api";

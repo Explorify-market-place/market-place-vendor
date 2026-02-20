@@ -41,5 +41,4 @@ export const dynamoDb = DynamoDBDocumentClient.from(client, {
 export const PLANS_TABLE = process.env.DYNAMODB_PLANS_TABLE || "TravelPlans";
 export const USERS_TABLE = process.env.DYNAMODB_USERS_TABLE || "Users";
 export const BOOKINGS_TABLE = process.env.DYNAMODB_BOOKINGS_TABLE || "Bookings";
-export const DEPARTURES_TABLE =
-  process.env.DYNAMODB_DEPARTURES_TABLE || "Departures";
+export const DEPARTURES_TABLE = process.env.DYNAMODB_DEPARTURES_TABLE || "Departures";
