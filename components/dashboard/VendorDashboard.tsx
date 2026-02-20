@@ -23,10 +23,12 @@ import {
   ArrowRight,
   Settings,
   FileStack,
+  Globe,
 } from "lucide-react";
 import { TripForm } from "@/components/dashboard/TripForm";
 import { TripCard } from "@/components/dashboard/TripCard";
 import { BulkPdfUpload } from "@/components/dashboard/BulkPdfUpload";
+import { BulkLinkUpload } from "@/components/dashboard/BulkLinkUpload";
 import {
   checkVendorCompletion,
   getVendorCompletionMessage,
@@ -48,6 +50,7 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
   const router = useRouter();
   const [showTripForm, setShowTripForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
+  const [showLinkUpload, setShowLinkUpload] = useState(false);
   const [trips, setTrips] = useState<DynamoDBPlan[]>([]);
   const [completionStatus, setCompletionStatus] =
     useState<VendorCompletionStatus | null>(null);
@@ -253,6 +256,20 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
               <Button
                 onClick={() => {
                   if (completionStatus?.isComplete) {
+                    setShowLinkUpload(true);
+                  } else {
+                    toast.warning("Please complete your profile first");
+                  }
+                }}
+                variant="outline"
+                className="bg-white/70 dark:bg-slate-900/70"
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                Import from Links
+              </Button>
+              <Button
+                onClick={() => {
+                  if (completionStatus?.isComplete) {
                     setShowBulkUpload(true);
                   } else {
                     toast.warning("Please complete your profile first");
@@ -401,6 +418,16 @@ export default function VendorDashboard({ user }: VendorDashboardProps) {
         <BulkPdfUpload
           onClose={() => {
             setShowBulkUpload(false);
+            fetchTrips();
+          }}
+        />
+      )}
+
+      {/* Bulk Link Upload Modal */}
+      {showLinkUpload && (
+        <BulkLinkUpload
+          onClose={() => {
+            setShowLinkUpload(false);
             fetchTrips();
           }}
         />

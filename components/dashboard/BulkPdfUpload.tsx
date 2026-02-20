@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { processPdfExtraction } from "@/app/actions/plan-extraction";
 
 interface BulkPdfUploadProps {
   onClose: () => void;
@@ -149,19 +150,14 @@ export function BulkPdfUpload({ onClose }: BulkPdfUploadProps) {
           return updated;
         });
 
-        // Step 3: Process PDF with Lambda
-        const processResponse = await fetch("/api/plans/process-pdf", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pdfKey: key }),
-        });
+        // Step 3: Process PDF with Lambda via server action
+        const result = await processPdfExtraction(key);
 
-        if (!processResponse.ok) {
-          const errorData = await processResponse.json();
-          throw new Error(errorData.details || "PDF processing failed");
+        if (!result.success) {
+          throw new Error(result.error);
         }
 
-        const { planId, name } = await processResponse.json();
+        const { planId, name } = result;
 
         // Update status to completed
         setPdfFiles((prev) => {

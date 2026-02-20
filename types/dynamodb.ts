@@ -93,6 +93,7 @@ export interface DynamoDBPlan {
 
   languages?: string[];
   accessibility?: Accessibility;
+  sourceLink?: string; // Original website URL if imported from a link
 }
 
 // ============ DEPARTURE ENTITY ============
